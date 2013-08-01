@@ -170,9 +170,6 @@
 # [*config_file_group*]
 #   Main configuration file path group
 #
-# [*config_file_init*]
-#   Path of configuration file sourced by init script
-#
 # [*pid_file*]
 #   Path of pid file. Used by monitor
 #
@@ -234,7 +231,6 @@ class nova (
   $config_file_mode    = params_lookup( 'config_file_mode' ),
   $config_file_owner   = params_lookup( 'config_file_owner' ),
   $config_file_group   = params_lookup( 'config_file_group' ),
-  $config_file_init    = params_lookup( 'config_file_init' ),
   $pid_file            = params_lookup( 'pid_file' ),
   $data_dir            = params_lookup( 'data_dir' ),
   $log_dir             = params_lookup( 'log_dir' ),
@@ -382,13 +378,7 @@ class nova (
 
   ### Provide puppi data, if enabled ( puppi => true )
   if $nova::bool_puppi == true {
-    $classvars=get_class_args()
-    puppi::ze { 'nova':
-      ensure    => $nova::manage_file,
-      variables => $classvars,
-      helper    => $nova::puppi_helper,
-      noop      => $nova::bool_noops,
-    }
+    include nova::puppi 
   }
 
 

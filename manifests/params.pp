@@ -17,11 +17,13 @@ class nova::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    default => 'nova',
+    /(?i:Debian|Ubuntu|Mint)/ => 'nova-compute',
+    default                   => 'openstack-nova-compute',
   }
 
   $service = $::operatingsystem ? {
-    default => 'nova',
+    /(?i:Debian|Ubuntu|Mint)/ => 'nova-compute',
+    default                   => 'openstack-nova-compute',
   }
 
   $service_status = $::operatingsystem ? {
@@ -60,11 +62,6 @@ class nova::params {
     default => 'root',
   }
 
-  $config_file_init = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/nova',
-    default                   => '/etc/sysconfig/nova',
-  }
-
   $pid_file = $::operatingsystem ? {
     default => '/var/run/nova.pid',
   }
@@ -78,10 +75,10 @@ class nova::params {
   }
 
   $log_file = $::operatingsystem ? {
-    default => '/var/log/nova/nova.log',
+    default => [ '/var/log/nova/nova-compute.log' , '/var/log/nova/nova-manage.log' ],
   }
 
-  $port = '42'
+  $port = '5000'
   $protocol = 'tcp'
 
   # General Settings
