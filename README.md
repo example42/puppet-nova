@@ -2,6 +2,8 @@
 
 This is a Puppet module for nova based on the second generation layout ("NextGen") of Example42 Puppet Modules.
 
+For a fully puppetized OpenStack implementation you'd better use the official StackForge modules. This module is intended to be a quick replacement for setups where you want to manage configurations based on plain files on an existing setup.
+
 Made by Alessandro Franceschi / Lab42
 
 Official site: http://www.example42.com
