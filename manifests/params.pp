@@ -51,15 +51,15 @@ class nova::params {
   }
 
   $config_file_mode = $::operatingsystem ? {
-    default => '0644',
+    default => '0640',
   }
 
   $config_file_owner = $::operatingsystem ? {
-    default => 'root',
+    default => 'nova',
   }
 
   $config_file_group = $::operatingsystem ? {
-    default => 'root',
+    default => 'nova',
   }
 
   $pid_file = $::operatingsystem ? {
