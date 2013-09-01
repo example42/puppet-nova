@@ -128,7 +128,7 @@
 # [*noops*]
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   Basically you can run a dryrun for this specific module if you set
-#   this to true. Default: false
+#   this to true. Default: undef
 #
 # Default class params - As defined in nova::params.
 # Note that these variables are mostly defined and used in the module itself,
@@ -249,7 +249,6 @@ class nova (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
-  $bool_noops=any2bool($noops)
 
   ### Definition of some variables used in the module
   $manage_package = $nova::bool_absent ? {
@@ -324,7 +323,7 @@ class nova (
   ### Managed resources
   package { $nova::package:
     ensure  => $nova::manage_package,
-    noop    => $nova::bool_noops,
+    noop    => $nova::noops,
   }
 
   service { 'nova':
@@ -334,7 +333,7 @@ class nova (
     hasstatus  => $nova::service_status,
     pattern    => $nova::process,
     require    => Package[$nova::package],
-    noop       => $nova::bool_noops,
+    noop       => $nova::noops,
   }
 
   file { 'nova.conf':
@@ -349,7 +348,7 @@ class nova (
     content => $nova::manage_file_content,
     replace => $nova::manage_file_replace,
     audit   => $nova::manage_audit,
-    noop    => $nova::bool_noops,
+    noop    => $nova::noops,
   }
 
   # The whole nova configuration directory can be recursively overriden
@@ -365,7 +364,7 @@ class nova (
       force   => $nova::bool_source_dir_purge,
       replace => $nova::manage_file_replace,
       audit   => $nova::manage_audit,
-      noop    => $nova::bool_noops,
+      noop    => $nova::noops,
     }
   }
 
@@ -391,7 +390,7 @@ class nova (
         target   => $nova::monitor_target,
         tool     => $nova::monitor_tool,
         enable   => $nova::manage_monitor,
-        noop     => $nova::bool_noops,
+        noop     => $nova::noops,
       }
     }
     if $nova::service != '' {
@@ -403,7 +402,7 @@ class nova (
         argument => $nova::process_args,
         tool     => $nova::monitor_tool,
         enable   => $nova::manage_monitor,
-        noop     => $nova::bool_noops,
+        noop     => $nova::noops,
       }
     }
   }
@@ -420,7 +419,7 @@ class nova (
       direction   => 'input',
       tool        => $nova::firewall_tool,
       enable      => $nova::manage_firewall,
-      noop        => $nova::bool_noops,
+      noop        => $nova::noops,
     }
   }
 
@@ -434,7 +433,7 @@ class nova (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $nova::bool_noops,
+      noop    => $nova::noops,
     }
   }
 

@@ -6,28 +6,28 @@ class nova::puppi {
     ensure    => $nova::manage_file,
     variables => $classvars,
     helper    => $nova::puppi_helper,
-    noop      => $nova::bool_noops,
+    noop      => $nova::noops,
   }
 
   # For Puppi 1
-  puppi::info::module { "nova":
-    packagename => "${nova::package}",
-    servicename => "${nova::service}",
-    processname => "${nova::process}",
-    configfile  => "${nova::config_file}",
-    configdir   => "${nova::config_dir}",
-    pidfile     => "${nova::pid_file}",
-    datadir     => "${nova::data_dir}",
-    logdir      => "${nova::log_dir}",
-    protocol    => "${nova::protocol}",
-    port        => "${nova::port}",
-    description => "What Puppet knows about nova" ,
-    # run         => "nova -V###",
+  puppi::info::module { 'nova':
+    packagename => $nova::package,
+    servicename => $nova::service,
+    processname => $nova::process,
+    configfile  => $nova::config_file,
+    configdir   => $nova::config_dir,
+    pidfile     => $nova::pid_file,
+    datadir     => $nova::data_dir,
+    logdir      => $nova::log_dir,
+    protocol    => $nova::protocol,
+    port        => $nova::port,
+    description => 'What Puppet knows about nova',
+    # run         => 'nova -V###',
   }
 
-  puppi::log { "nova":
-    description => "Logs of nova" ,  
-    log      => "${nova::log_file}",
+  puppi::log { 'nova':
+    description => 'Logs of nova',
+    log         => $nova::log_file,
   }
 
 }

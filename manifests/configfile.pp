@@ -42,7 +42,7 @@ define nova::configfile (
     content => template($template),
     replace => $nova::manage_file_replace,
     audit   => $nova::manage_audit,
-    noop    => $nova::bool_noops,
+    noop    => $nova::noops,
   }
 
 }
