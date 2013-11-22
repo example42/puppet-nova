@@ -150,7 +150,7 @@ class nova (
   if $nova::monitor_class {
     class { $nova::monitor_class:
       options_hash => $nova::monitor_options_hash,
-      scope_hash   => {}, # TODO: Find a good way to inject class' scope
+      scope_hash   => {}, # TODO: Find a good way to inject class' scope
     }
   }
 
