@@ -23,15 +23,15 @@ class nova::params {
   }
 
   $config_file_mode = $::osfamily ? {
-    default => '0644',
+    default => '0640',
   }
 
   $config_file_owner = $::osfamily ? {
-    default => 'root',
+    default => 'nova',
   }
 
   $config_file_group = $::osfamily ? {
-    default => 'root',
+    default => 'nova',
   }
 
   $config_dir_path = $::osfamily ? {

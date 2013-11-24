@@ -57,7 +57,7 @@ define nova::conf (
   $mode         = undef,
   $owner        = undef,
   $group        = undef,
-  $notify       = undef,
+  $notify       = 'class_default',
   $require      = undef,
   $replace      = undef,
 
@@ -75,8 +75,11 @@ define nova::conf (
   $manage_owner   = pickx($owner, $nova::config_file_owner)
   $manage_group   = pickx($group, $nova::config_file_group)
   $manage_require = pickx($require, $nova::config_file_require)
-  $manage_notify  = pickx($notify, $nova::manage_config_file_notify)
   $manage_replace = pickx($replace, $nova::config_file_replace)
+  $manage_notify  = $notify ? {
+    'class_default' => $nova::manage_config_file_notify,
+    default         => $notify,
+  }
 
   file { "nova_conf_${name}":
     ensure  => $ensure,

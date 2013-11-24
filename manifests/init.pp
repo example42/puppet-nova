@@ -11,7 +11,8 @@
 #
 class nova (
 
-  $extra_package_name        = $nova::params::extra_package_name,
+  $conf_hash                 = undef,
+  $generic_service_hash      = undef,
 
   $package_name              = $nova::params::package_name,
   $package_ensure            = 'present',
@@ -20,17 +21,14 @@ class nova (
   $service_ensure            = 'running',
   $service_enable            = true,
 
-  $registry_service_name     = $nova::params::registry_service_name,
-
   $config_file_path          = $nova::params::config_file_path,
   $config_file_replace       = $nova::params::config_file_replace,
   $config_file_require       = 'Package[nova]',
-  $config_file_notify        = 'Service[nova]',
+  $config_file_notify        = 'class_default',
   $config_file_source        = undef,
   $config_file_template      = undef,
   $config_file_content       = undef,
   $config_file_options_hash  = undef,
-
 
   $config_dir_path           = $nova::params::config_dir_path,
   $config_dir_source         = undef,
@@ -69,7 +67,11 @@ class nova (
 
   $manage_config_file_content = default_content($config_file_content, $config_file_template)
 
-  $manage_config_file_notify = pickx($config_file_notify)
+  $manage_config_file_notify  = $config_file_notify ? {
+    'class_default' => 'Service[nova]',
+    ''              => undef,
+    default         => $config_file_notify,
+  }
 
   if $package_ensure == 'absent' {
     $manage_service_enable = undef
@@ -87,25 +89,9 @@ class nova (
   # Resources managed
 
   if $nova::package_name {
-    package { $nova::package_name:
+    package { 'nova':
       ensure   => $nova::package_ensure,
-    }
-  }
-
-  if $nova::extra_package_name {
-    package { $nova::extra_package_name:
-      ensure   => $nova::package_ensure,
-    }
-  }
-
-  if $nova::service_name {
-    service { $nova::service_name:
-      ensure     => $nova::manage_service_ensure,
-      enable     => $nova::manage_service_enable,
-    }
-    service { $nova::registry_service_name:
-      ensure     => $nova::manage_service_ensure,
-      enable     => $nova::manage_service_enable,
+      name     => $nova::package_name,
     }
   }
 
@@ -131,13 +117,29 @@ class nova (
       recurse => $nova::config_dir_recurse,
       purge   => $nova::config_dir_purge,
       force   => $nova::config_dir_purge,
-      notify  => $nova::config_file_notify,
+      notify  => $nova::manage_config_file_notify,
       require => $nova::config_file_require,
+    }
+  }
+
+  if $nova::service_name {
+    service { 'nova':
+      ensure     => $nova::manage_service_ensure,
+      name       => $nova::service_name,
+      enable     => $nova::manage_service_enable,
     }
   }
 
 
   # Extra classes
+  if $conf_hash {
+    create_resources('nova::conf', $conf_hash)
+  }
+
+  if $generic_service_hash {
+    create_resources('nova::generic_service', $generic_service_hash)
+  }
+
 
   if $nova::dependency_class {
     include $nova::dependency_class
