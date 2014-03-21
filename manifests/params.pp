@@ -9,13 +9,12 @@ class nova::params {
   }
 
   $package_name = $::osfamily ? {
-    'Redhat' => 'openstack-nova-compute',
-    default  => 'nova-compute',
+    'Redhat' => 'openstack-nova-common',
+    default  => 'nova-common',
   }
 
   $service_name = $::osfamily ? {
-    'Redhat' => 'openstack-nova-compute',
-    default  => 'nova-compute',
+    default  => '',
   }
 
   $config_file_path = $::osfamily ? {
