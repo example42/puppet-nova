@@ -67,7 +67,7 @@ class nova (
   $manage_config_file_content = default_content($config_file_content, $config_file_template)
 
   $manage_config_file_notify  = $config_file_notify ? {
-    'class_default' => 'Service[nova]',
+    'class_default' => undef,
     ''              => undef,
     default         => $config_file_notify,
   }
